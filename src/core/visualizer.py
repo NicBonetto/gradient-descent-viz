@@ -151,6 +151,71 @@ class GradientDescentVisualizer:
         plt.tight_layout()
         plt.show()
 
+    def visualize_interactive(self):
+        if self.trajectory is None:
+            self.run_optimization()
+
+        x_bounds, y_bounds = self.func.bounds
+        x = np.linspace(x_bounds[0], x_bounds[1], 50)
+        y = np.linspace(y_bounds[0], y_bounds[1], 50)
+        X, Y = np.meshgrid(x, y)
+        Z = np.zeros_like(X)
+
+        for i in range(X.shape[0]):
+            for j in range(X.shape[1]):
+                Z[i, j] = self.func(X[i, j], Y[i, j])
+
+        traj_z = np.array([self.func(p[0], p[1]) for p in self.trajectory])
+        fig = go.Figure()
+
+        fig.add_trace(go.Surface(
+            x=x, y=y, z=Z,
+            colorscale='Viridis',
+            opacity=0.7,
+            name='Function Surface'
+        ))
+
+        fig.add_trace(go.Scatter3d(
+            x=self.trajectory[:, 0],
+            y=self.trajectory[:, 1],
+            z=traj_z,
+            mode='lines+markers',
+            line=dict(color='red', width=4),
+            marker=dict(size=4, color='red'),
+            name='Optimization Path'
+        ))
+
+        fig.add_trace(go.Scatter3d(
+            x=[self.trajectory[0, 0]],
+            y=[self.trajectory[0, 1]],
+            z=[traj_z[0]],
+            mode='markers',
+            marker=dict(size=10, color='green'),
+            name='Start'
+        ))
+
+        fig.add_trace(go.Scatter3d(
+            x=[self.trajectory[-1, 0]],
+            y=[self.trajectory[-1, 1]],
+            z=[traj_z[-1]],
+            mode='markers',
+            marker=dict(size=12, color='red', symbol='diamond'),
+            name='End'
+        ))
+
+        fig.update_layout(
+            title='Interactive Gradient Descent Visualization',
+            scene=dict(
+                xaxis_title='x',
+                yaxis_title='y',
+                zaxis_title='f(x, y)'
+                ),
+            width=900,
+            height=700
+        )
+
+        fig.show()
+
 
     def get_convergence_data(self):
         if self.trajectory is None:
