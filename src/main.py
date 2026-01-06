@@ -7,7 +7,7 @@ def main():
         '--function',
         type=str,
         default='himmelblau',
-        choices=['himmelblau'],
+        choices=['himmelblau', 'rosenbrock', 'sphere', 'beale'],
         help='Test function to optimize'
     )
     parser.add_argument(
