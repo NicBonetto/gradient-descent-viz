@@ -85,6 +85,73 @@ class GradientDescentVisualizer:
         plt.tight_layout()
         plt.show()
 
+    def visualize_2d(self):
+        if self.trajectory is None:
+            self.run_optimization()
+
+        x_bounds, y_bounds = self.func.bounds
+        x = np.linspace(x_bounds[0], x_bounds[1], 100)
+        y = np.linspace(y_bounds[0], y_bounds[1], 100)
+        X, Y = np.meshgrid(x, y)
+        Z = np.zeros_like(X)
+
+        for i in range(X.shape[0]):
+            for j in range(X.shape[1]):
+                Z[i, j] = self.func(X[i, j], Y[i, j])
+
+        fig, ax = plt.subplots(figsize=(10, 8))
+        contour = ax.contour(X, Y, Z, levels=30, cmap='viridis', alpha=0.6)
+        ax.contourf(X, Y, Z, levels=30, cmap='viridis', alpha=0.3)
+        plt.colorbar(contour, ax=ax, label='Function Value')
+
+        ax.plot(
+            self.trajectory[:, 0],
+            self.trajectory[:, 1],
+            'r.-',
+            linewidth=2,
+            markersize=8,
+            label='Optimization Path'
+        )
+
+        ax.plot(
+            self.trajectory[0, 0],
+            self.trajectory[0, 1],
+            'go',
+            markersize=12,
+            label='Start'
+        )
+
+        ax.plot(
+            self.trajectory[-1, 0],
+            self.trajectory[-1, 1],
+            'r*',
+            markersize=15,
+            label='End'
+        )
+
+        opt_x, opt_y = self.func.optimum
+        ax.plot(
+            opt_x,
+            opt_y,
+            'b*',
+            markersize=15,
+            label='Global Optimum'
+        )
+
+        ax.set_xlabel('x', fontsize=12)
+        ax.set_ylabel('y', fontsize=12)
+        ax.set_title(
+            f'Gradient Descent Visualization\n'
+            f'Final Value: {self.func(self.trajectory[-1, 0], self.trajectory[-1, 1]):.6f}',
+            fontsize=14
+        )
+        ax.legend()
+        ax.grid(True, alpha=0.3)
+
+        plt.tight_layout()
+        plt.show()
+
+
     def get_convergence_data(self):
         if self.trajectory is None:
             self.run_optimization()

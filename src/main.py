@@ -45,7 +45,7 @@ def main():
         '--mode',
         type=str,
         default='3d',
-        choices=['3d'],
+        choices=['3d', '2d'],
         help='Visualization mode'
     )
 
@@ -63,6 +63,8 @@ def main():
 
     if args.mode == '3d':
         viz.visualize_3d()
+    elif args.mode == '2d':
+        viz.visualize_2d()
 
 if __name__ == '__main__':
     main()
