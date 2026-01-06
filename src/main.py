@@ -14,7 +14,7 @@ def main():
         '--optimizer',
         type=str,
         default='adam',
-        choices=['adam'],
+        choices=['adam', 'sgd', 'momentumsgd', 'rmsprop'],
         help='Optimization algorithm'
     )
     parser.add_argument(
